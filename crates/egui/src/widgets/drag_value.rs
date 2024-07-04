@@ -593,7 +593,7 @@ impl<'a> Widget for DragValue<'a> {
 
                 let speed = if is_slow_speed { speed / 10.0 } else { speed };
 
-                let delta_value = delta_points as f64 * speed;
+                let delta_value = delta_points.round() as f64 * speed;
 
                 if delta_value != 0.0 {
                     // Since we round the value being dragged, we need to store the full precision value in memory:
@@ -601,13 +601,7 @@ impl<'a> Widget for DragValue<'a> {
                     let precise_value = precise_value.unwrap_or(value);
                     let precise_value = precise_value + delta_value;
 
-                    let aim_delta = aim_rad * speed;
-                    let rounded_new_value = emath::smart_aim::best_in_range_f64(
-                        precise_value - aim_delta,
-                        precise_value + aim_delta,
-                    );
-                    let rounded_new_value =
-                        emath::round_to_decimals(rounded_new_value, auto_decimals);
+                    let rounded_new_value = emath::round_to_decimals(precise_value, auto_decimals);
                     // Dragging will always clamp the value to the range.
                     let rounded_new_value = clamp_value_to_range(rounded_new_value, range.clone());
                     set(&mut get_set_value, rounded_new_value);
